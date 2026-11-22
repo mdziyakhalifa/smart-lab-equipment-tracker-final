@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Smart Lab Equipment Tracker — a lab equipment management web application prototype.">
+  <title>Smart Lab · Equipment Tracker</title>
+
+  <!-- Fonts (free CDN) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons and QR generation (free CDNs, optional enhancements) -->
+  <script async src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script async src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- App data layer first, then application logic -->
+  <script defer src="data.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+
+  <!-- ===================== LOGIN (FR-01) ===================== -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="brand-mark"><i data-lucide="layers-3"></i></div>
+        <div><h1>Smart Lab</h1><p>Equipment Tracker</p></div>
+      </div>
+      <h2>Sign in to your workspace</h2>
+      <p class="login-sub">Use your laboratory account to continue.</p>
+
+      <form id="loginForm">
+        <div class="field">
+          <label>Email or username<span class="req">*</span></label>
+          <input id="loginUser" type="text" required autocomplete="username" placeholder="e.g. avery.morgan@smartlab.edu">
+        </div>
+        <div class="field">
+          <label>Password<span class="req">*</span></label>
+          <input id="loginPass" type="password" required autocomplete="current-password" placeholder="Enter your password">
+        </div>
+        <p class="login-error" id="loginError"></p>
+        <button type="submit" class="btn btn-primary login-btn"><i data-lucide="log-in"></i> Sign in</button>
+      </form>
+
+      <div class="demo-accounts">
+        <p>Demonstration accounts — click to fill</p>
+        <div class="demo-grid">
+          <button data-action="demo-login" data-role="Administrator" data-user="avery.morgan@smartlab.edu" data-pass="admin123">Administrator</button>
+          <button data-action="demo-login" data-role="Lab Assistant" data-user="michael.reyes@smartlab.edu" data-pass="assistant123">Lab Assistant</button>
+          <button data-action="demo-login" data-role="Faculty" data-user="sarah.mitchell@smartlab.edu" data-pass="faculty123">Faculty</button>
+          <button data-action="demo-login" data-role="Student" data-user="emily.wong@smartlab.edu" data-pass="student123">Student</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-shell">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand" data-action="nav" data-page="dashboard" role="button" tabindex="0" aria-label="Go to dashboard">
+        <div class="brand-mark"><i data-lucide="layers-3"></i></div>
+        <div class="brand-text">
+          <strong>Smart Lab</strong>
+          <span>Equipment Tracker</span>
+        </div>
+        <button class="sidebar-close" data-action="toggle-sidebar" aria-label="Close menu">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <nav class="nav" id="nav">
+        <div class="nav-group">
+          <p class="nav-label">Overview</p>
+          <button class="nav-item active" data-action="nav" data-page="dashboard">
+            <i data-lucide="layout-dashboard"></i><span>Dashboard</span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <p class="nav-label">Equipment</p>
+          <button class="nav-item" data-action="nav" data-page="inventory">
+            <i data-lucide="boxes"></i><span>Inventory</span>
+          </button>
+          <button class="nav-item" data-action="nav" data-page="qr">
+            <i data-lucide="scan-line"></i><span>QR Scanner</span>
+          </button>
+          <button class="nav-item" data-action="nav" data-page="availability">
+            <i data-lucide="circle-check-big"></i><span>Availability</span>
+          </button>
+          <button class="nav-item" data-action="nav" data-page="consumables">
+            <i data-lucide="flask-conical"></i><span>Consumables</span>
+            <span class="nav-count" id="nav-consumable-count">0</span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <p class="nav-label">Transactions</p>
+          <button class="nav-item" data-action="nav" data-page="borrowing">
+            <i data-lucide="arrow-left-right"></i><span>Borrowing Records</span>
+          </button>
+          <button class="nav-item" data-action="nav" data-page="returns">
+            <i data-lucide="package-check"></i><span>Returns</span>
+          </button>
+          <button class="nav-item" data-action="nav" data-page="reservations">
+            <i data-lucide="calendar-days"></i><span>Reservations</span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <p class="nav-label">Operations</p>
+          <button class="nav-item" data-action="nav" data-page="damage">
+            <i data-lucide="triangle-alert"></i><span>Damage Reports</span>
+            <span class="nav-count" id="nav-damage-count">0</span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <p class="nav-label">Maintenance</p>
+          <button class="nav-item" data-action="nav" data-page="maintenance">
+            <i data-lucide="wrench"></i><span>Maintenance Log</span>
+            <span class="nav-count" id="nav-maintenance-count">0</span>
+          </button>
+          <button class="nav-item" data-action="nav" data-page="calibration">
+            <i data-lucide="gauge"></i><span>Calibration</span>
+            <span class="nav-count" id="nav-calibration-count">0</span>
+          </button>
+        </div>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="sidebar-foot-card">
+          <div class="foot-icon"><i data-lucide="shield-check"></i></div>
+          <div>
+            <strong>Lab Workspace</strong>
+            <span>Academic prototype · v2.1</span>
+          </div>
+        </div>
+        <button class="collapse-btn" data-action="collapse-sidebar">
+          <i data-lucide="panel-left-close"></i><span>Collapse sidebar</span>
+        </button>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" data-action="toggle-sidebar"></div>
+
+    <!-- ===================== MAIN ===================== -->
+    <div class="main-wrap" id="mainWrap">
+
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn menu-btn" data-action="toggle-sidebar" aria-label="Toggle menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="page-heading">
+            <div class="breadcrumb"><span data-action="nav" data-page="dashboard">Workspace</span><i data-lucide="chevron-right"></i><span id="breadcrumb-current">Dashboard</span></div>
+            <h1 id="topbar-title">Dashboard</h1>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="global-search" id="globalSearch">
+            <i data-lucide="search"></i>
+            <input type="text" id="globalSearchInput" placeholder="Search equipment, records…" autocomplete="off" aria-label="Global search">
+            <kbd>⌘ K</kbd>
+            <div class="search-dropdown" id="searchDropdown"></div>
+          </div>
+
+          <button class="icon-btn bell-btn" data-action="toggle-notifications" aria-label="Notifications">
+            <i data-lucide="bell"></i>
+            <span class="bell-dot" id="bellDot"></span>
+          </button>
+
+          <button class="user-chip" data-action="open-profile" aria-label="Edit profile">
+            <div class="avatar" id="profileAvatar">AM</div>
+            <div class="user-meta">
+              <strong id="profileName">Avery Morgan</strong>
+              <span id="profileRole">Administrator</span>
+            </div>
+            <i data-lucide="chevron-down" class="user-chevron"></i>
+          </button>
+        </div>
+      </header>
+
+      <main class="content" id="content">
+        <section class="page active" id="page-dashboard"><div id="render-dashboard"></div></section>
+        <section class="page" id="page-inventory"><div id="render-inventory"></div></section>
+        <section class="page" id="page-qr"><div id="render-qr"></div></section>
+        <section class="page" id="page-availability"><div id="render-availability"></div></section>
+        <section class="page" id="page-borrowing"><div id="render-borrowing"></div></section>
+        <section class="page" id="page-returns"><div id="render-returns"></div></section>
+        <section class="page" id="page-reservations"><div id="render-reservations"></div></section>
+        <section class="page" id="page-damage"><div id="render-damage"></div></section>
+        <section class="page" id="page-consumables"><div id="render-consumables"></div></section>
+        <section class="page" id="page-maintenance"><div id="render-maintenance"></div></section>
+        <section class="page" id="page-calibration"><div id="render-calibration"></div></section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ===================== OVERLAYS ===================== -->
+  <div class="notification-panel" id="notificationPanel">
+    <div class="notif-head">
+      <div>
+        <h3>Notifications</h3>
+        <p id="notif-subtitle">You're all caught up.</p>
+      </div>
+      <button class="icon-btn" data-action="close-notifications" aria-label="Close notifications"><i data-lucide="x"></i></button>
+    </div>
+    <div class="notif-list" id="notifList"></div>
+    <div class="notif-foot">
+      <button class="btn btn-quiet btn-sm" data-action="mark-all-read"><i data-lucide="check-check"></i> Mark all read</button>
+      <button class="btn btn-quiet btn-sm" data-action="clear-notifications"><i data-lucide="trash-2"></i> Clear all</button>
+    </div>
+  </div>
+  <div class="panel-scrim" id="panelScrim" data-action="close-notifications"></div>
+
+  <div id="modalRoot"></div>
+  <div id="toastRoot" class="toast-root"></div>
+
+</body>
+</html>
